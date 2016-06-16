@@ -20,7 +20,7 @@
   become: yes
   shell: phpenmod goo
   args:
-    creates: /etc/php/7.0/cli/conf.d/goo.ini
+    creates: /etc/php/7.0/cli/conf.d/20-goo.ini
 
 - name: Install composer
   become: yes
