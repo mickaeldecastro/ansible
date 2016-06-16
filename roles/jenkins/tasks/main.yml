@@ -46,25 +46,16 @@
     - greenballs
     - slack
     - throttle-concurrents
-  register: jenkins_plugins
+  notify:
+    - Restart Jenkins
 
-- name: Restart jenkins
-  when: jenkins_plugins.changed
-  shell: java -jar {{ansible_env.HOME}}/jenkins-cli.jar -s http://127.0.0.1:8080/ restart --username ovh --password {{ansible_ssh_pass}}
-
-- name: Stop nginx
+- name: Generate SSL certificate for Jenkins
   become: yes
-  service: name=nginx state=stopped
-
-- name: Generate SSL certificate
-  become: yes
-  shell: letsencrypt --agree-tos --email it@platinium-group.org -d jenkins.gootickets.com certonly
+  shell: bash -c 'systemctl stop nginx && letsencrypt --agree-tos --email it@platinium-group.org -d jenkins.gootickets.com certonly'
   args:
     creates: /etc/letsencrypt/live/jenkins.gootickets.com/fullchain.pem
-
-- name: Start nginx
-  become: yes
-  service: name=nginx state=started
+  notify:
+    - Start nginx
 
 - name: Install Jenkins nginx configuration
   become: yes
