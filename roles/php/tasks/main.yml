@@ -1,0 +1,23 @@
+---
+- name: Install PHP
+  become: yes
+  apt: name={{item}}
+  with_items:
+    - memcached
+    - php
+    - php-curl
+    - php-mbstring
+    - php-memcached
+    - php-mysql
+    - php-xml
+    - php-zip
+
+- name: Install GooTickets ini file for PHP
+  become: yes
+  copy: src=goo.ini dest=/etc/php/7.0/mods-available/goo.ini
+
+- name: Enable GooTickets ini file for PHP
+  become: yes
+  shell: phpenmod goo
+  args:
+    creates: /etc/php/7.0/cli/conf.d/goo.ini

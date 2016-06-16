@@ -1,0 +1,73 @@
+---
+- name: Get Jenkins aptitude file
+  become: yes
+  lineinfile: dest=/etc/apt/sources.list.d/jenkins.list regexp='^deb' line='deb http://pkg.jenkins-ci.org/debian-stable binary/' create=yes
+  register: jenkins_apt
+
+- name: Get Jenkins repository certificate
+  when: jenkins_apt.changed
+  become: yes
+  shell: bash -c 'wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add -'
+
+- name: Update aptitude cache
+  when: jenkins_apt.changed
+  become: yes
+  apt: update_cache=yes
+
+- name: Install Jenkins
+  become: yes
+  apt: name=jenkins state=latest force=yes
+
+- name: Jenkins should only listen to localhost
+  become: yes
+  lineinfile: dest=/etc/default/jenkins insertafter=EOF regexp='^JENKINS_ARGS="$JENKINS_ARGS --httpListenAddress=127.0.0.1"$' line='JENKINS_ARGS="$JENKINS_ARGS --httpListenAddress=127.0.0.1"'
+  notify:
+    - Restart Jenkins
+
+- name: Start Jenkins
+  become: yes
+  service: name=jenkins state=started
+
+- name: Install Jenkins CLI
+  get_url: url="http://127.0.0.1:8080/jnlpJars/jenkins-cli.jar" dest="{{ansible_env.HOME}}/jenkins-cli.jar"
+
+- name: Install Jenkins plugins
+  shell: java -jar {{ansible_env.HOME}}/jenkins-cli.jar -s http://127.0.0.1:8080/ install-plugin {{item}} --username ovh --password {{ansible_ssh_pass}}
+  args:
+    creates: /var/lib/jenkins/plugins/{{item}}.jpi
+  with_items:
+    - ansicolor
+    - embeddable-build-status
+    - git
+    - git-client
+    - github
+    - github-api
+    - ghprb
+    - greenballs
+    - slack
+    - throttle-concurrents
+  register: jenkins_plugins
+
+- name: Restart jenkins
+  when: jenkins_plugins.changed
+  shell: java -jar {{ansible_env.HOME}}/jenkins-cli.jar -s http://127.0.0.1:8080/ restart --username ovh --password {{ansible_ssh_pass}}
+
+- name: Stop nginx
+  become: yes
+  service: name=nginx state=stopped
+
+- name: Generate SSL certificate
+  become: yes
+  shell: letsencrypt --agree-tos --email it@platinium-group.org -d jenkins.gootickets.com certonly
+  args:
+    creates: /etc/letsencrypt/live/jenkins.gootickets.com/fullchain.pem
+
+- name: Start nginx
+  become: yes
+  service: name=nginx state=started
+
+- name: Install Jenkins nginx configuration
+  become: yes
+  copy: src=jenkins.nginx.conf dest=/etc/nginx/sites-enabled/jenkins.conf
+  notify:
+    - Reload nginx

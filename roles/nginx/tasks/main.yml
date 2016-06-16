@@ -1,0 +1,13 @@
+---
+- name: Install nginx and letsencrypt
+  become: yes
+  apt: name={{item}}
+  with_items:
+    - nginx
+    - letsencrypt
+  notify:
+    - Start nginx
+
+- name: Setup cron job to auto renew letsencrypt certificates
+  become: true
+  cron: name="renew letsencrypt" minute="0" hour="0" day="1" job="bash -c 'systemctl stop nginx ; letsencrypt renew --agree-tos --email it@platinium-group.org --standalone ; systemctl start nginx' > /dev/null"

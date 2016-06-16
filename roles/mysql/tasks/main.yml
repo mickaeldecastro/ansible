@@ -1,0 +1,25 @@
+---
+- name: Install ansible dependencies for MySQL
+  become: yes
+  apt: name={{item}}
+  with_items:
+    - python
+    - python-mysqldb
+
+- name: Set default password for MySQL root user
+  become: yes
+  shell: bash -c 'echo mysql-server-5.1 mysql-server/{{item}} password root | debconf-set-selections'
+  with_items:
+    - root_password
+    - root_password_again
+
+- name: Install MySQL
+  become: yes
+  apt: name={{item}}
+  with_items:
+    - mysql-client
+    - mysql-server
+
+- name: Start MySQL
+  become: yes
+  service: name=mysql state=started

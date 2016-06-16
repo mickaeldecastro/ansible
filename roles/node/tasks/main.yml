@@ -1,0 +1,20 @@
+---
+- name: Install Node
+  become: yes
+  apt: name={{item}}
+  with_items:
+    - nodejs
+    - npm
+
+- name: Fix Ubuntu Node binary named `nodejs` instead of `node`
+  become: yes
+  shell: update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
+  args:
+    creates: /usr/bin/node
+
+- name: Install NPM global packages
+  become: yes
+  npm: name={{item}} global=yes
+  with_items:
+    - bower
+    - grunt-cli

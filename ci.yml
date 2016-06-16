@@ -1,0 +1,10 @@
+---
+- hosts: ci
+  remote_user: ovh
+  roles:
+    - git
+    - mysql
+    - php
+    - node
+    - nginx
+    - jenkins
