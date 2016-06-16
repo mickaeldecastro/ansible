@@ -20,7 +20,7 @@
 
 - name: Jenkins should only listen to localhost
   become: yes
-  lineinfile: dest=/etc/default/jenkins insertafter=EOF regexp='^JENKINS_ARGS="$JENKINS_ARGS --httpListenAddress=127.0.0.1"$' line='JENKINS_ARGS="$JENKINS_ARGS --httpListenAddress=127.0.0.1"'
+  lineinfile: dest=/etc/default/jenkins insertafter=EOF regexp='^JENKINS_ARGS="\$JENKINS_ARGS --httpListenAddress=127.0.0.1"$' line='JENKINS_ARGS="$JENKINS_ARGS --httpListenAddress=127.0.0.1"'
   notify:
     - Restart Jenkins
 
