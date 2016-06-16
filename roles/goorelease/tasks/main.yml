@@ -1,0 +1,93 @@
+---
+- name: Get GooRelease sources
+  git: repo=git@github.com:PlatiniumGroup/goorelease.git dest={{ansible_env.HOME}}/pg/goorelease/ force=yes
+
+- name: Install GooRelease bower dependencies
+  shell: bower i
+  args:
+    chdir: "{{ansible_env.HOME}}/pg/goorelease/"
+    creates: "{{ansible_env.HOME}}/pg/goorelease/vendor"
+
+- name: Install GooRelease npm dependencies
+  shell: npm i
+  args:
+    chdir: "{{ansible_env.HOME}}/pg/goorelease/"
+    creates: "{{ansible_env.HOME}}/pg/goorelease/node_modules"
+
+- name: Build GooRelease
+  shell: NODE_ENV=production grunt build
+  args:
+    creates: "{{ansible_env.HOME}}/pg/goorelease/public/vendor"
+
+- name: Get GooTickets sources
+  git: repo=git@github.com:PlatiniumGroup/gootickets.git dest={{ansible_env.HOME}}/pg/gootickets/ force=yes
+
+- name: Install GooTickets bower dependencies
+  shell: bower i
+  args:
+    chdir: "{{ansible_env.HOME}}/pg/gootickets/"
+    creates: "{{ansible_env.HOME}}/pg/gootickets/vendorjs/angular"
+
+- name: Install GooTickets npm dependencies
+  shell: npm i
+  args:
+    chdir: "{{ansible_env.HOME}}/pg/gootickets/"
+    creates: "{{ansible_env.HOME}}/pg/gootickets/node_modules"
+
+- name: Install GooTickets composer dependencies
+  shell: composer install
+  args:
+    chdir: "{{ansible_env.HOME}}/pg/gootickets/"
+    creates: "{{ansible_env.HOME}}/pg/gootickets/vendor"
+
+- name: Run first code coverage generation
+  shell: grunt karma
+  args:
+    chdir: "{{ansible_env.HOME}}/pg/gootickets/"
+    creates: "{{ansible_env.HOME}}/pg/gootickets/coverage"
+
+- name: Create `static` directory in GooRelease
+  file: path="{{ansible_env.HOME}}/pg/goorelease/static" state=directory
+
+- name: Symlink coverage directory to GooRelease
+  file: src="{{ansible_env.HOME}}/pg/gootickets/coverage" dest="{{ansible_env.HOME}}/pg/goorelease/static/karma-coverage" state=link
+
+- name: Generate SSL certificate for GooRelease
+  become: yes
+  shell: bash -c 'systemctl stop nginx && letsencrypt --agree-tos --email it@platinium-group.org -d goorelease.gootickets.com certonly'
+  args:
+    creates: /etc/letsencrypt/live/goorelease.gootickets.com/fullchain.pem
+  notify:
+    - Start nginx
+
+- name: Install GooRelease nginx configuration
+  become: yes
+  copy: src=goorelease.nginx.conf dest=/etc/nginx/sites-enabled/goorelease.conf
+  notify:
+    - Reload nginx
+
+- name: Install mongodb
+  become: yes
+  apt: name=mongodb
+
+- name: Start mongodb
+  become: yes
+  service: name=mongodb state=started
+
+- name: Install NodeJS forever globally
+  become: yes
+  npm: name=forever global=yes
+
+- name: Create log directory for forever
+  become: yes
+  file: path=/var/log/forever state=directory mode=0777
+
+- name: Create required .foreverignore file
+  become: yes
+  file: path="{{ansible_env.HOME}}/pg/goorelease/.foreverignore" state=file
+
+- name: Install GooRelease startup script
+  become: yes
+  copy: src=goorelease.sh dest=/etc/init.d/goorelease mode="a+x"
+  notify:
+    - Start GooRelease

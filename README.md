@@ -12,6 +12,7 @@ The following roles are enabled for CI server(s):
 * [`node`](#role-node)
 * [`nginx`](#role-nginx)
 * [`jenkins`](#role-jenkins)
+* [`goorelease`](#role-goorelease)
 
 ## Roles
 
@@ -61,3 +62,7 @@ Installs [Jenkins](https://jenkins.io/), generate a SSL certificate for `jenkins
 * [`throttle-concurrents`](https://wiki.jenkins-ci.org/display/JENKINS/Throttle+Concurrent+Builds+Plugin)
 
 Jenkins configuration regarding security must be done afterward through the Jenkins web interface.
+
+### <a name="role-goorelease"></a> `goorelease`
+
+Installs [GooRelease](https://github.com/PlatiniumGroup/goorelease).

@@ -1,0 +1,6 @@
+---
+- name: Start GooRelease
+  become: yes
+  shell: /etc/init.d/goorelease start
+  args:
+    creates: /var/log/forever/output.log
