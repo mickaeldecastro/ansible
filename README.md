@@ -25,7 +25,7 @@ Installs [MySQL](http://www.mysql.com/) client and server, with root passord set
 
 ### <a name="role-php"></a> `php`
 
-Installs [memcached](https://memcached.org/) and [PHP](http://php.net/) with required configuration file for GooTickets as well as the following PHP extensions:
+Installs [memcached](https://memcached.org/), [composer](https://getcomposer.org) and [PHP](http://php.net/) with required configuration file for GooTickets as well as the following PHP extensions:
 
 * `php-curl`
 * `php-mbstring`
