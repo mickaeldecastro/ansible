@@ -91,3 +91,6 @@
   copy: src=goorelease.sh dest=/etc/init.d/goorelease mode="a+x"
   notify:
     - Start GooRelease
+
+- name: Create `prestashop` database
+  mysql_db: name=prestashop state=present login_user=root login_password=root
