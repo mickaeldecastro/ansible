@@ -19,6 +19,10 @@
   args:
     creates: "{{ansible_env.HOME}}/pg/goorelease/public/vendor"
 
+- name: Install sass
+  become: yes
+  apt: name=ruby-sass
+
 - name: Get GooTickets sources
   git: repo=git@github.com:PlatiniumGroup/gootickets.git dest={{ansible_env.HOME}}/pg/gootickets/ force=yes
 
