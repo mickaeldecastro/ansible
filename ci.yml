@@ -2,6 +2,7 @@
 - hosts: ci
   remote_user: ovh
   roles:
+    - security
     - git
     - mysql
     - php

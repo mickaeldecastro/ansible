@@ -30,6 +30,7 @@ $ sudo pip install -U ansible
 
 The following roles are enabled for CI server(s):
 
+* [`security`](#role-security)
 * [`git`](#role-git)
 * [`mysql`](#role-mysql)
 * [`php`](#role-php)
@@ -49,6 +50,10 @@ $ ansible-playbook -i hosts -k -K ci.yml
 ```
 
 ## Roles
+
+### <a name="role-security"></a> `security`
+
+Disable ssh root login.
 
 ### <a name="role-git"></a> `git`
 
