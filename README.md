@@ -1,8 +1,32 @@
 # Ansible playbooks used @PlatiniumGroup
 
-## CI
+## Install ansible
 
-### Jenkins
+### OS X
+
+With homebrew:
+
+```
+$ brew install ansible
+```
+
+With vanilla python:
+
+```
+$ sudo easy_install pip
+$ sudo pip install -U ansible
+```
+
+### Ubuntu
+
+```
+$ sudo apt-get install python python-pip
+$ sudo pip install -U ansible
+```
+
+## Playbooks
+
+### CI
 
 The following roles are enabled for CI server(s):
 
@@ -13,6 +37,16 @@ The following roles are enabled for CI server(s):
 * [`nginx`](#role-nginx)
 * [`jenkins`](#role-jenkins)
 * [`goorelease`](#role-goorelease)
+
+#### Setup
+
+Before running the playbook, you must create an user named `ovh` on the server and allow it to use `sudo`.
+
+#### Running the playbook
+
+```
+$ ansible-playbook -i hosts -k -K ci.yml
+```
 
 ## Roles
 
