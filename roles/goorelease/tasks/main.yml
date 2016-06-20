@@ -19,6 +19,12 @@
   args:
     creates: "{{ansible_env.HOME}}/pg/goorelease/public/vendor"
 
+- name: Setup git username for GooRelease
+  ini_file: dest="{{ansible_env.HOME}}/.gitconfig" section=user option=name value=platiniumdummy
+
+- name: Setup git email for GooRelease
+  ini_file: dest="{{ansible_env.HOME}}/.gitconfig" section=user option=email value=it@platinium-group.org
+
 - name: Install sass
   become: yes
   apt: name=ruby-sass
