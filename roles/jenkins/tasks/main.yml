@@ -46,6 +46,9 @@
     - greenballs
     - slack
     - throttle-concurrents
+    - shared-workspace
+    - build-pipeline-plugin
+    - sonar
   notify:
     - Restart Jenkins
 

@@ -37,6 +37,7 @@ The following roles are enabled for CI server(s):
 * [`node`](#role-node)
 * [`nginx`](#role-nginx)
 * [`jenkins`](#role-jenkins)
+* [`sonarqube`](#role-sonarqube)
 * [`goorelease`](#role-goorelease)
 
 #### Setup
@@ -99,8 +100,17 @@ Installs [Jenkins](https://jenkins.io/), generate a SSL certificate for `jenkins
 * [`greenballs`](https://wiki.jenkins-ci.org/display/JENKINS/Green+Balls)
 * [`slack`](https://wiki.jenkins-ci.org/display/JENKINS/Slack+Plugin)
 * [`throttle-concurrents`](https://wiki.jenkins-ci.org/display/JENKINS/Throttle+Concurrent+Builds+Plugin)
+* [`shared-workspace`](https://wiki.jenkins-ci.org/display/JENKINS/Shared+workspace+plugin)
+* [`build-pipeline-plugin`](https://wiki.jenkins-ci.org/display/JENKINS/Build+Pipeline+Plugin)
+* [`sonar`](https://wiki.jenkins-ci.org/display/JENKINS/SonarQube+plugin)
 
 Jenkins configuration regarding security must be done afterward through the Jenkins web interface.
+
+### <a name="role-sonarqube"></a> `sonarqube`
+
+Installs [SonarQube](http://sonarqube.org)
+
+[PHP plugin](http://docs.sonarqube.org/display/PLUG/PHP+Plugin) must be installed manually
 
 ### <a name="role-goorelease"></a> `goorelease`
 

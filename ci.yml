@@ -8,5 +8,6 @@
     - php
     - node
     - nginx
-    - jenkins
+    - { role: jenkins, tags: ['jenkins'] }
+    - { role: sonarqube, tags: ['sonar'] }
     - goorelease
