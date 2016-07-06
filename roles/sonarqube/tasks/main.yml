@@ -53,3 +53,17 @@
 
 - name: Make sure Sonar is responding on the configured port.
   wait_for: port=9000 delay=3 timeout=300
+
+- name: Generate SSL certificate for sonar
+  become: yes
+  shell: bash -c 'systemctl stop nginx && letsencrypt --agree-tos --email it@platinium-group.org -d sonar.gootickets.com certonly'
+  args:
+    creates: /etc/letsencrypt/live/sonar.gootickets.com/fullchain.pem
+  notify:
+    - Start nginx
+
+- name: Install nginx configuration
+  become: yes
+  copy: src=sonar.nginx.conf dest=/etc/nginx/sites-enabled/sonar.conf
+  notify:
+    - Reload nginx
