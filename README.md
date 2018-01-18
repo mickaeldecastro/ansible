@@ -110,8 +110,7 @@ Jenkins configuration regarding security must be done afterward through the Jenk
 
 Installs [SonarQube](http://sonarqube.org)
 
-[PHP plugin](http://docs.sonarqube.org/display/PLUG/PHP+Plugin) must be installed manually
-
+[PHP plugin](http://docs.sonarqube.org/
 ### <a name="role-goorelease"></a> `goorelease`
 
 Installs [GooRelease](https://github.com/PlatiniumGroup/goorelease) and creates a `prestashop` database. Once installation is done, a backup must be imported in the `prestashop` database.
